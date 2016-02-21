@@ -1,4 +1,5 @@
 #include "twodplot.h"
+#include <iostream>
 #include "TCanvas.h"
 
 
@@ -27,14 +28,14 @@ TH2* twodplot::transpose(TH2* hist) {
 
   const Int_t    tobe_nbinsx = hist->GetYaxis()->GetNbins();
   const Int_t    tobe_nbinsy = hist->GetXaxis()->GetNbins();
+  const Double_t* tobe_xbins = hist->GetYaxis()->GetXbins()->GetArray();
+  const Double_t* tobe_ybins = hist->GetXaxis()->GetXbins()->GetArray();
+  const Double_t  tobe_xmin  = hist->GetYaxis()->GetXmin();
+  const Double_t  tobe_ymin  = hist->GetXaxis()->GetXmin();
+  const Double_t  tobe_xmax  = hist->GetYaxis()->GetXmax();
+  const Double_t  tobe_ymax  = hist->GetXaxis()->GetXmax();
 
   if (0==strcmp(hist->ClassName(),"TH2F")) {
-    const Double_t* tobe_xbins = hist->GetYaxis()->GetXbins()->GetArray();
-    const Double_t* tobe_ybins = hist->GetXaxis()->GetXbins()->GetArray();
-    const Double_t  tobe_xmin  = hist->GetYaxis()->GetXmin();
-    const Double_t  tobe_ymin  = hist->GetXaxis()->GetXmin();
-    const Double_t  tobe_xmax  = hist->GetYaxis()->GetXmax();
-    const Double_t  tobe_ymax  = hist->GetXaxis()->GetXmax();
     if (tobe_xbins && tobe_ybins) {
       retval = new TH2D(name.Data(),title.Data(),tobe_nbinsx,tobe_xbins,
                                                  tobe_nbinsy,tobe_ybins);
@@ -49,12 +50,6 @@ TH2* twodplot::transpose(TH2* hist) {
                                                  tobe_nbinsy,tobe_ymin,tobe_ymax);
     }
   } else if (0==strcmp(hist->ClassName(),"TH2D")) {
-    const Float_t* tobe_xbins = hist->GetYaxis()->GetXbins()->GetArray();
-    const Float_t* tobe_ybins = hist->GetXaxis()->GetXbins()->GetArray();
-    const Float_t  tobe_xmin  = hist->GetYaxis()->GetXmin();
-    const Float_t  tobe_ymin  = hist->GetXaxis()->GetXmin();
-    const Float_t  tobe_xmax  = hist->GetYaxis()->GetXmax();
-    const Float_t  tobe_ymax  = hist->GetXaxis()->GetXmax();
     if (tobe_xbins && tobe_ybins) {
       retval = new TH2F(name.Data(),title.Data(),tobe_nbinsx,tobe_xbins,
                                                  tobe_nbinsy,tobe_ybins);
