@@ -21,21 +21,21 @@ TCanvas* twodplot::Draw() {
 
 TH2* twodplot::transpose(TH2* hist) {
   TH2* retval;
-  TString  name(hist->GetName());
-  TString  title(hist->GetTitle());
+  TString name(hist->GetName());
+  TString title(hist->GetTitle());
   name += "_transposed";
   title += " transposed";
 
-  const Int_t    tobe_nbinsx = hist->GetYaxis()->GetNbins();
-  const Int_t    tobe_nbinsy = hist->GetXaxis()->GetNbins();
-  const Double_t* tobe_xbins = hist->GetYaxis()->GetXbins()->GetArray();
-  const Double_t* tobe_ybins = hist->GetXaxis()->GetXbins()->GetArray();
-  const Double_t  tobe_xmin  = hist->GetYaxis()->GetXmin();
-  const Double_t  tobe_ymin  = hist->GetXaxis()->GetXmin();
-  const Double_t  tobe_xmax  = hist->GetYaxis()->GetXmax();
-  const Double_t  tobe_ymax  = hist->GetXaxis()->GetXmax();
+  const Int_t     tobe_nbinsx = hist->GetYaxis()->GetNbins();
+  const Int_t     tobe_nbinsy = hist->GetXaxis()->GetNbins();
+  const Double_t* tobe_xbins  = hist->GetYaxis()->GetXbins()->GetArray();
+  const Double_t* tobe_ybins  = hist->GetXaxis()->GetXbins()->GetArray();
+  const Double_t  tobe_xmin   = hist->GetYaxis()->GetXmin();
+  const Double_t  tobe_ymin   = hist->GetXaxis()->GetXmin();
+  const Double_t  tobe_xmax   = hist->GetYaxis()->GetXmax();
+  const Double_t  tobe_ymax   = hist->GetXaxis()->GetXmax();
 
-  if (0==strcmp(hist->ClassName(),"TH2F")) {
+  if (0 == strcmp(hist->ClassName(), "TH2F")) {
     if (tobe_xbins && tobe_ybins) {
       retval = new TH2D(name.Data(),title.Data(),tobe_nbinsx,tobe_xbins,
                                                  tobe_nbinsy,tobe_ybins);
@@ -49,7 +49,7 @@ TH2* twodplot::transpose(TH2* hist) {
       retval = new TH2D(name.Data(),title.Data(),tobe_nbinsx,tobe_xmin,tobe_xmax,
                                                  tobe_nbinsy,tobe_ymin,tobe_ymax);
     }
-  } else if (0==strcmp(hist->ClassName(),"TH2D")) {
+  } else if (0 == strcmp(hist->ClassName(), "TH2D")) {
     if (tobe_xbins && tobe_ybins) {
       retval = new TH2F(name.Data(),title.Data(),tobe_nbinsx,tobe_xbins,
                                                  tobe_nbinsy,tobe_ybins);
