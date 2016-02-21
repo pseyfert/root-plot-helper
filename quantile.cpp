@@ -27,7 +27,7 @@ void quantile(std::vector<T> values, double prob, T &quantile, T &quantile_lo,
 
 template void quantile(std::vector<double> values, double prob,
                        double &quantile, double &quantile_lo,
-                       double &quantile_hi, unsigned NBOOdoubleS = 1000);
+                       double &quantile_hi, unsigned NBOOdoubleS = 10000);
 //template void quantile(std::vector<float> values, double prob, float &quantile,
 //                       float &quantile_lo, float &quantile_hi,
 //                       unsigned NBOOfloatS = 1000);

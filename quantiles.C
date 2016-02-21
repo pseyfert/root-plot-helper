@@ -62,8 +62,8 @@ void quantiles::Loop()
   fChain->SetBranchStatus("Bs_P",1);  // activate branchname
   fChain->SetBranchStatus("Bs_MCORR",1);  // activate branchname
 
-  TH2D* hh = new TH2D("hh","hh",100,2000,10000,200,0,600000);
-  twodplot* twod = new twodplot("twod","twod",100,2000,10000,200,0,600000);
+  TH2D* hh = new TH2D("hh","hh",30,2000,10000,200,0,600000);
+  twodplot* twod = new twodplot("twod","twod",30,2000,10000,200,0,600000);
 
   Long64_t nbytes = 0, nb = 0;
   for (Long64_t jentry=0; jentry<nentries;jentry++) {

@@ -25,7 +25,7 @@ TCanvas* twodplot::Draw() {
   const Double_t  xmin   = m_hist->GetXaxis()->GetXmin();
   const Double_t  xmax   = m_hist->GetXaxis()->GetXmax();
   if (!built_from_hist) {
-    for (Double_t prob = 0.2 ; prob < 0.9 ; prob+=0.2) {
+    for (Double_t prob = 0.25 ; prob < 0.9 ; prob+=0.25) {
       TH1* oned;
       if (xbins) {
         oned = new TH1D(Form("Xquantiles_%3.1f",prob),Form("Xquantiles_%3.1f",prob),nbinsx,xbins);
@@ -38,11 +38,13 @@ TCanvas* twodplot::Draw() {
         oned->SetBinContent(xbin,q);
         oned->SetBinError(xbin,0.5*(qh-ql));
       }
-      oned->Draw("same");
+      prephist(oned);
+      oned->Draw("sameE1");
     }
   } else {
     for (Double_t prob = 0.2 ; prob < 0.9 ; prob+=0.2) {
       TH1* oned = m_hist->QuantilesX(prob, Form("Xquantiles_%3.1f",prob));
+      prephist(oned);
       oned->Draw("samehist");
     }
   }
@@ -61,17 +63,19 @@ TCanvas* twodplot::Draw() {
       } else {
         oned = new TH1D(Form("Yquantiles_%3.1f",prob),Form("Yquantiles_%3.1f",prob),nbinsy,ymin,ymax);
       }
-      for (Int_t ybin = 1 ; ybin <= oned->GetNbinsY() ; ++ybin) {
+      for (Int_t ybin = 1 ; ybin <= oned->GetNbinsX() ; ++ybin) {
         double q,ql,qh;
         quantile(m_xvals[ybin-1],prob,q,ql,qh); 
         oned->SetBinContent(ybin,q);
         oned->SetBinError(ybin,0.5*(qh-ql));
       }
-      oned->Draw("same");
+      prephist(oned);
+      oned->Draw("sameE1");
     }
   } else {
     for (Double_t prob = 0.2 ; prob < 0.9 ; prob+=0.2) {
       TH1* oned = m_hist->QuantilesY(prob, Form("Yquantiles_%3.1f",prob));
+      prephist(oned);
       oned->Draw("samehist");
     }
   }
@@ -81,9 +85,14 @@ TCanvas* twodplot::Draw() {
 void twodplot::Fill(Double_t x, Double_t y) {
   Int_t xbin = m_hist->GetXaxis()->FindBin(x);
   Int_t ybin = m_hist->GetYaxis()->FindBin(y);
+//  std::cout << "Filling x = " << x << "\t\ty = " << y << std::endl;
+//  std::cout << "Bin     x = " << xbin << "\t\ty = " << ybin << std::endl;
+//  std::cout << "Bins    x = " << m_yvals.size() << "\t\ty = " << m_xvals.size() << std::endl;
   if (!built_from_hist) {
-    m_xvals[ybin-1].push_back(x);
-    m_yvals[xbin-1].push_back(y);
+    if (ybin>0 && ybin <=m_xvals.size()) m_xvals[ybin-1].push_back(x);
+    else std::cout << "cannot fill x" << std::endl;
+    if (xbin>0 && xbin <=m_yvals.size()) m_yvals[xbin-1].push_back(y);
+    else std::cout << "cannot fill y" << std::endl;
   }
   m_hist->Fill(x,y);
 }
