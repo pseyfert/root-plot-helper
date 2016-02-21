@@ -3,28 +3,22 @@
 #include "TCanvas.h"
 #include "quantile.h"
 
-
-void twodplot::Fill(Double_t x, Double_t y) {
-  m_xvals.push_back(x);
-  m_yvals.push_back(y);
-}
-
 TCanvas* twodplot::Draw() {
   TCanvas* retval = new TCanvas();
   retval->Divide(2,1);
   retval->cd(1);
   m_hist->Draw("colz");
-  const Int_t     nbinsx = hist->GetXaxis()->GetNbins();
-  const Double_t* xbins  = hist->GetXaxis()->GetXbins()->GetArray();
-  const Double_t  xmin   = hist->GetXaxis()->GetXmin();
-  const Double_t  xmax   = hist->GetXaxis()->GetXmax();
+  const Int_t     nbinsx = m_hist->GetXaxis()->GetNbins();
+  const Double_t* xbins  = m_hist->GetXaxis()->GetXbins()->GetArray();
+  const Double_t  xmin   = m_hist->GetXaxis()->GetXmin();
+  const Double_t  xmax   = m_hist->GetXaxis()->GetXmax();
   if (!built_from_hist) {
     for (Double_t prob = 0.2 ; prob < 0.9 ; prob+=0.2) {
       TH1* oned;
       if (xbins) {
-        oned = new TH1D(From("Xquantiles_%3.1f",prob),From("Xquantiles_%3.1f",prob),nbinsx,xbins);
+        oned = new TH1D(Form("Xquantiles_%3.1f",prob),Form("Xquantiles_%3.1f",prob),nbinsx,xbins);
       } else {
-        oned = new TH1D(From("Xquantiles_%3.1f",prob),From("Xquantiles_%3.1f",prob),nbinsx,xmin,xmax);
+        oned = new TH1D(Form("Xquantiles_%3.1f",prob),Form("Xquantiles_%3.1f",prob),nbinsx,xmin,xmax);
       }
       for (Int_t xbin = 1 ; xbin <= oned->GetNbinsX() ; ++xbin) {
         double q,ql,qh;
@@ -43,17 +37,17 @@ TCanvas* twodplot::Draw() {
   TH2* temp_hist = transpose(m_hist);
   retval->cd(2);
   temp_hist->Draw("colz");
-  const Int_t     nbinsy = hist->GetYaxis()->GetNbins();
-  const Double_t* ybins  = hist->GetYaxis()->GetXbins()->GetArray();
-  const Double_t  ymin   = hist->GetYaxis()->GetXmin();
-  const Double_t  ymax   = hist->GetYaxis()->GetXmax();
+  const Int_t     nbinsy = m_hist->GetYaxis()->GetNbins();
+  const Double_t* ybins  = m_hist->GetYaxis()->GetXbins()->GetArray();
+  const Double_t  ymin   = m_hist->GetYaxis()->GetXmin();
+  const Double_t  ymax   = m_hist->GetYaxis()->GetXmax();
   if (!built_from_hist) {
     for (Double_t prob = 0.2 ; prob < 0.9 ; prob+=0.2) {
       TH1* oned;
       if (ybins) {
-        oned = new TH1D(From("Yquantiles_%3.1f",prob),From("Yquantiles_%3.1f",prob),nbinsy,ybins);
+        oned = new TH1D(Form("Yquantiles_%3.1f",prob),Form("Yquantiles_%3.1f",prob),nbinsy,ybins);
       } else {
-        oned = new TH1D(From("Yquantiles_%3.1f",prob),From("Yquantiles_%3.1f",prob),nbinsy,ymin,ymax);
+        oned = new TH1D(Form("Yquantiles_%3.1f",prob),Form("Yquantiles_%3.1f",prob),nbinsy,ymin,ymax);
       }
       for (Int_t ybin = 1 ; ybin <= oned->GetNbinsY() ; ++ybin) {
         double q,ql,qh;
