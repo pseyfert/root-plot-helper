@@ -1,6 +1,7 @@
 #include "twodplot.h"
 #include <iostream>
 #include "TCanvas.h"
+#include "quantile.h"
 
 
 void twodplot::Fill(Double_t x, Double_t y) {
@@ -13,10 +14,72 @@ TCanvas* twodplot::Draw() {
   retval->Divide(2,1);
   retval->cd(1);
   m_hist->Draw("colz");
+  const Int_t     nbinsx = hist->GetXaxis()->GetNbins();
+  const Double_t* xbins  = hist->GetXaxis()->GetXbins()->GetArray();
+  const Double_t  xmin   = hist->GetXaxis()->GetXmin();
+  const Double_t  xmax   = hist->GetXaxis()->GetXmax();
+  if (!built_from_hist) {
+    for (Double_t prob = 0.2 ; prob < 0.9 ; prob+=0.2) {
+      TH1* oned;
+      if (xbins) {
+        oned = new TH1D(From("Xquantiles_%3.1f",prob),From("Xquantiles_%3.1f",prob),nbinsx,xbins);
+      } else {
+        oned = new TH1D(From("Xquantiles_%3.1f",prob),From("Xquantiles_%3.1f",prob),nbinsx,xmin,xmax);
+      }
+      for (Int_t xbin = 1 ; xbin <= oned->GetNbinsX() ; ++xbin) {
+        double q,ql,qh;
+        quantile(m_yvals[xbin-1],prob,q,ql,qh); 
+        oned->SetBinContent(xbin,q);
+        oned->SetBinError(xbin,0.5*(qh-ql));
+      }
+      oned->Draw("same");
+    }
+  } else {
+    for (Double_t prob = 0.2 ; prob < 0.9 ; prob+=0.2) {
+      TH1* oned = m_hist->QuantilesX(prob, Form("Xquantiles_%3.1f",prob));
+      oned->Draw("samehist");
+    }
+  }
   TH2* temp_hist = transpose(m_hist);
   retval->cd(2);
   temp_hist->Draw("colz");
+  const Int_t     nbinsy = hist->GetYaxis()->GetNbins();
+  const Double_t* ybins  = hist->GetYaxis()->GetXbins()->GetArray();
+  const Double_t  ymin   = hist->GetYaxis()->GetXmin();
+  const Double_t  ymax   = hist->GetYaxis()->GetXmax();
+  if (!built_from_hist) {
+    for (Double_t prob = 0.2 ; prob < 0.9 ; prob+=0.2) {
+      TH1* oned;
+      if (ybins) {
+        oned = new TH1D(From("Yquantiles_%3.1f",prob),From("Yquantiles_%3.1f",prob),nbinsy,ybins);
+      } else {
+        oned = new TH1D(From("Yquantiles_%3.1f",prob),From("Yquantiles_%3.1f",prob),nbinsy,ymin,ymax);
+      }
+      for (Int_t ybin = 1 ; ybin <= oned->GetNbinsY() ; ++ybin) {
+        double q,ql,qh;
+        quantile(m_xvals[ybin-1],prob,q,ql,qh); 
+        oned->SetBinContent(ybin,q);
+        oned->SetBinError(ybin,0.5*(qh-ql));
+      }
+      oned->Draw("same");
+    }
+  } else {
+    for (Double_t prob = 0.2 ; prob < 0.9 ; prob+=0.2) {
+      TH1* oned = m_hist->QuantilesY(prob, Form("Yquantiles_%3.1f",prob));
+      oned->Draw("samehist");
+    }
+  }
   return retval;
+}
+
+void twodplot::Fill(Double_t x, Double_t y) {
+  Int_t xbin = m_hist->GetXaxis()->FindBin(x);
+  Int_t ybin = m_hist->GetYaxis()->FindBin(y);
+  if (!built_from_hist) {
+    m_xvals[ybin-1].push_back(x);
+    m_yvals[xbin-1].push_back(y);
+  }
+  m_hist->Fill(x,y);
 }
 
 TH2* twodplot::transpose(TH2* hist) {
@@ -68,5 +131,10 @@ TH2* twodplot::transpose(TH2* hist) {
   }
   retval->GetXaxis()->SetTitle(hist->GetYaxis()->GetTitle());
   retval->GetYaxis()->SetTitle(hist->GetXaxis()->GetTitle());
+  for (int x = 0 ; x <= hist->GetNbinsX()+1 ; ++x) {
+    for (int y = 0 ; y <= hist->GetNbinsY()+1 ; ++y) {
+      retval->SetBinContent(retval->GetBin(y,x),hist->GetBinContent(hist->GetBin(x,y)));
+    }
+  }
   return retval;
 }
