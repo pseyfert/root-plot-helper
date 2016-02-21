@@ -9,6 +9,11 @@ all: quantiles
 
 quantiles: twodplot.o quantile.o quantiles.o
 
+%.o: %.cpp %.h
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+%.o: %.C %.h
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+
 clean:
 	rm -f quantiles *.o
 
