@@ -2,8 +2,20 @@
 #include <iostream>
 #include "TCanvas.h"
 #include "quantile.h"
+#include "TStyle.h"
+
+void prephist(TH1* hist) {
+  Color_t colors[4] = {kBlue, kRed, kGreen+2, kBlue};
+  static size_t c = 0;
+  Color_t color = colors[c++];
+  hist->SetMarkerStyle(kDot);
+  hist->SetMarkerColor(color);
+  hist->SetLineColor(color);
+  if (c==4) c=0;
+}
 
 TCanvas* twodplot::Draw() {
+  gStyle->SetPalette(52);
   TCanvas* retval = new TCanvas();
   retval->Divide(2,1);
   retval->cd(1);
