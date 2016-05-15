@@ -34,7 +34,7 @@ TCanvas* twodplot::Draw() {
       }
       for (Int_t xbin = 1 ; xbin <= oned->GetNbinsX() ; ++xbin) {
         double q,ql,qh;
-        quantile(m_yvals[xbin-1],prob,q,ql,qh); 
+        quantile(m_yvals[xbin],prob,q,ql,qh); 
         oned->SetBinContent(xbin,q);
         oned->SetBinError(xbin,0.5*(qh-ql));
       }
@@ -65,7 +65,7 @@ TCanvas* twodplot::Draw() {
       }
       for (Int_t ybin = 1 ; ybin <= oned->GetNbinsX() ; ++ybin) {
         double q,ql,qh;
-        quantile(m_xvals[ybin-1],prob,q,ql,qh); 
+        quantile(m_xvals[ybin],prob,q,ql,qh); 
         oned->SetBinContent(ybin,q);
         oned->SetBinError(ybin,0.5*(qh-ql));
       }
@@ -89,9 +89,9 @@ void twodplot::Fill(Double_t x, Double_t y) {
 //  std::cout << "Bin     x = " << xbin << "\t\ty = " << ybin << std::endl;
 //  std::cout << "Bins    x = " << m_yvals.size() << "\t\ty = " << m_xvals.size() << std::endl;
   if (!built_from_hist) {
-    if (ybin>0 && ybin <=m_xvals.size()) m_xvals[ybin-1].push_back(x);
+    if (ybin>=0 && ybin <= 1+m_xvals.size()) m_xvals[ybin].push_back(x);
     else std::cout << "cannot fill x" << std::endl;
-    if (xbin>0 && xbin <=m_yvals.size()) m_yvals[xbin-1].push_back(y);
+    if (xbin>=0 && xbin <= 1+m_yvals.size()) m_yvals[xbin].push_back(y);
     else std::cout << "cannot fill y" << std::endl;
   }
   m_hist->Fill(x,y);

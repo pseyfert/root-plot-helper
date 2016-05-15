@@ -51,10 +51,10 @@ private:
   bool built_from_hist;
   void init_vectors() {
     std::vector<Double_t> empty;
-    for (size_t ii = 0 ; ii < m_hist->GetNbinsX() ; ++ii) {
+    for (size_t ii = 0 ; ii <= 1+m_hist->GetNbinsX() ; ++ii) {
       m_yvals.push_back(empty);
     }
-    for (size_t ii = 0 ; ii < m_hist->GetNbinsY() ; ++ii) {
+    for (size_t ii = 0 ; ii <= 1+m_hist->GetNbinsY() ; ++ii) {
       m_xvals.push_back(empty);
     }
   }
