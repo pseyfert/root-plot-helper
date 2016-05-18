@@ -11,6 +11,7 @@ void quantile(std::vector<T> values, double prob, T &quantile, T &quantile_lo,
   std::vector<T> bootstrapped_percentiles;
   for (unsigned ii = 0; ii < NBOOTS; ii++) {
     std::vector<T> v = bootstrapit(values);
+    std::sort(v.begin(), v.end());
     T q = gsl_stats_quantile_from_sorted_data(&v[0], 1, v.size(), prob);
     bootstrapped_percentiles.push_back(q);
   }
